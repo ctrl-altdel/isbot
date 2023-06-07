@@ -1,0 +1,11 @@
+{
+    "host": "anya.world", 
+    "port": 25565,    
+    "version": "1.19.2",        
+    "auth": "microsoft",
+    "hideErrors": false,
+    "timeout": 30000,
+    "ViewDistance": 4,
+    "checkTimeoutInterval": 0,
+    "keepAlive": true
+}

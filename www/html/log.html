@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="data:;base64,=">
+    <meta charset="utf-8">
+    <title>ISbot</title>
+</head>
+
+<body style="margin: 0; padding: 0; border: none; " onload="on_page_load()">
+    <div id="header" style="position: fixed; width: 100%; top: 0px; height: 170px;">
+        <div id="title" style="background-color: blue; height: 50px;">
+            <div
+                style="float: left; text-align: left; color: white; font-size:xx-large; margin-left: 20px; margin-top: 10px;">
+                Isbot管理界面
+            </div>
+        </div>
+        <div style="background-color:rgb(0,0,220); height: 15px;"></div>
+        <div style="background-color:rgb(0,0,180); height: 10px;"></div>
+        <div style="background-color:rgb(0,0,120); height: 5px;"></div>
+        <div id="menu" style="width: 100%; height: 2px; background-color: white;"></div>
+        <div id="menu" style="width: 100%; height: 38px; background-color: rgb(0,0,120);">
+            <table style="margin: auto; width: 100%">
+                <tr>
+                    <td style="width: 10%; text-align: center;"><a href="/"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">在线控制</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/doc"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">指令文档</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/log"
+                            style="color: orange; font-size: large; text-decoration: none;" target="_self">详细日志</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/help"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">系统帮助</a></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div style="position: fixed; width: 100%; height: 80px; bottom: 0;background-color:rgb(240,240,240)">
+        <div style="height: 80px; width: 100%;">
+            <div style="position: absolute;top: 20px; width: 100%; text-align: center; font-size: larger;">
+                (当日志较大时请耐心等待加载)</div>
+        </div>
+    </div>
+
+    <div id="main" style="position: absolute; bottom: 80px; top: 120px; width: 100%;">
+        <div id="summary"
+            style="padding-left: 10%; height: 5%; font-style: italic; vertical-align: middle;"></div>
+        <div style="width: 80%; height: 90%; margin-left: 10%; overflow-y: auto;">
+            <table style="width: 100%; table-layout: fixed;">
+                <thead style="background-color: lightgray;">
+                    <tr>
+                        <th style="width: 60px;">级别</th>
+                        <th style="width: 200px;">时间</th>
+                        <th>内容</th>
+                    </tr>
+                </thead>
+                <tbody id="content">
+                    <tr></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    function on_page_load() {
+        let req = new XMLHttpRequest();
+        req.open("GET", "?type=logdata");
+        req.send();
+        req.onreadystatechange = () => {
+            if (req.readyState == 4 && req.status == 200) {
+                set_content(req.responseText);
+            }
+        }
+    }
+
+    function set_content(data) {
+        let lines = data.split("\n");
+        document.getElementById("summary").innerHTML = `共计${lines.length - 1}条记录`;
+        let content = document.getElementById("content");
+        content.innerHTML = null;
+        for (let i = 0; i < lines.length - 1; i++) {
+            let splited = lines[i].split(",", 3);
+            let color;
+            switch (splited[0]) {
+                case "warn":
+                    color = "yellow";
+                    break;
+                case "error":
+                    color = "palevioletred";
+                default:
+                    color = "white"
+                    break;
+            }
+            content.innerHTML += `<tr style="height: 20px;"><td style="text-align: center; background-color: ${color};">${splited[0]}</td><td style="text-align: center;">${splited[1]}</td><td>${splited[2]}</td></tr>`;
+        }
+        content.innerHTML += "<tr><td></td></tr>";
+    }
+
+</script>
+
+</html>

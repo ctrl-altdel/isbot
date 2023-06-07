@@ -1,0 +1,18 @@
+[
+    {
+        "username":"demo1",
+        "account":"demo1@mail.com",
+        "master":[
+            "master1",
+            "master2"
+        ]
+    },
+    {
+        "username":"demo2",
+        "account":"demo2@mail.com",
+        "master":[
+            "master1",
+            "master3"
+        ]
+    }
+]

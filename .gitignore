@@ -1,0 +1,24 @@
+# backup files
+*.7z
+*.zip
+*.rar
+*.tar
+*.gzs
+
+#old files
+old*
+
+# log files
+logs
+
+# private files
+config/*.json
+
+# vscode files
+.vscode
+
+# util files(will refactor)
+util
+
+# node packages
+node_modules

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="data:;base64,=">
+    <meta charset="utf-8">
+    <title>ISbot</title>
+</head>
+
+<body style="margin: 0; padding: 0; border: none; " onload="refresh_state()">
+    <div id="header" style="position: fixed; width: 100%; top: 0; height: 120px;">
+        <div id="title" style="background-color: blue; height: 50px;">
+            <div
+                style="float: left; text-align: left; color: white; font-size:xx-large; margin-left: 20px; margin-top: 10px;">
+                Isbot管理界面
+            </div>
+        </div>
+        <div style="background-color:rgb(0,0,220); height: 15px;"></div>
+        <div style="background-color:rgb(0,0,180); height: 10px;"></div>
+        <div style="background-color:rgb(0,0,120); height: 5px;"></div>
+        <div id="menu" style="width: 100%; height: 2px; background-color: white;"></div>
+        <div id="menu" style="width: 100%; height: 38px; background-color: rgb(0,0,120);">
+            <table style="margin: auto; width: 100%">
+                <tr>
+                    <td style="width: 10%; text-align: center;"><a href="/"
+                            style="color: orange; font-size: large; text-decoration: none;" target="_self">在线控制</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/doc"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">指令文档</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/log"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">详细日志</a></td>
+                    <td style="width: 10%; text-align: center;"><a href="/help"
+                            style="color: white; font-size: large; text-decoration: none;" target="_self">系统帮助</a></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div>
+
+    </div>
+
+    <div style="position: fixed; width: 100%; height: 80px; bottom: 0;background-color:rgb(240,240,240)">
+        <div style="height: 80px; width: 100%;">
+            <div style="position: absolute;top: 20px;">
+                <div style="float: left;font-size: larger;">状态更新指示：</div>
+                <div id="refresh_light"
+                    style="position: absolute; top: 5px; left: 130px;  background-color: red; width: 15px;height: 15px; visibility: hidden;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main" style="position: absolute; bottom: 80px; top: 120px; width: 100%; ">
+        <div style="width: 80%; position: absolute; margin-left: 10%; top:0px; bottom: 200px;">
+            <table width="100%" style="position: relative; top: 30px; overflow-y: auto;">
+                <caption style="font-size: x-large;"> Bot列表</caption>
+                <thead>
+                    <th width="25%">用户名</th>
+                    <th width="25%">账户</th>
+                    <th width="10%">状态</th>
+                    <th width="10%">上线</th>
+                    <th width="10%">下线</th>
+                </thead>
+                <tbody id="bot_status_table" style="text-align: center;">
+                    <!-- Here to insert bot status -->
+                </tbody>
+            </table>
+        </div>
+        <div style="width: 80%; margin-left: 10%; height: 200px; bottom: 0px; position: absolute;">
+            <div style="height: 33px; width: 100%; text-align: center; font-size: x-large;">发送命令</div>
+            <div style="background-color: lightgray; height: 2px; width: 100%;"></div>
+            <form action="" method="get" name="form_command" id="form_command">
+                <input type="hidden" name="type" value="command">
+                <div style="margin-top: 5px; margin-bottom: 15px;">
+                    命令执行者：<select name="username" id="command_target_user" style="width: 100px;" required="required">
+                        <!-- Here to insert online bots -->
+                    </select>
+                    命令发送者：<input type="text" name="sendername" required="required">
+                    <input type="submit" value="发送" style="margin-left: 50px;">
+                    <input type="reset" value="清空">
+                </div>
+                指令内容:<input type="text" name="text" style="width: 100%;" required="required">
+            </form>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    var current_online;
+
+    var table = document.getElementById("bot_status_table");
+    var command_target = document.getElementById("command_target_user");
+
+    let refresh_timer = setInterval(() => {
+        refresh_state();
+    }, 2000);
+
+
+    function refresh_state() {
+        const req = new XMLHttpRequest();
+        req.open("GET", "?type=refresh");
+        req.send()
+        req.onreadystatechange = () => {
+            if (req.readyState == 4 && req.status == 200) {
+                table.innerHTML = null;
+                command_target.innerHTML = null;
+                let list = JSON.parse(req.responseText);
+                list.forEach((data) => {
+                    if(data.status == 1) command_target.innerHTML += `<option>${data.username}</option>`
+                    create_row(data);
+                });
+                let x = document.getElementById("refresh_light");
+                x.style.visibility = "";
+                setTimeout(() => {
+                    x.style.visibility = "hidden";
+                }, 250);
+            }
+        }
+    }
+
+    function create_row(info) {
+        let color, status;
+        switch (info.status) {
+            case 1:
+                color = "yellowgreen";
+                status = "在线";
+                break;
+            case -1:
+                color = "red";
+                status = "离线";
+                break;
+            default:
+                color = "orange";
+                status = "变动";
+                break;
+        }
+
+        let cell_name = `<td>${info.username}</td>`;
+        let cell_account = `<td>${info.account}</td>`;
+        let cell_status = `<td style="background-color: ${color}; ">${status}</td>`;
+        let cell_login = `<td><button onclick="on_btn_click('login','${info.username}')" ${(info.status == -1) ? "" : "disabled"}>上线</button></td>`;
+        let cell_logout = `<td><button onclick="on_btn_click('logout','${info.username}')" ${(info.status == 1) ? "" : "disabled"}>下线</button></td>`;
+        table.innerHTML += `<tr> ${cell_name} ${cell_account} ${cell_status} ${cell_login} ${cell_logout}</tr>`;
+    }
+
+    function on_btn_click(command, username) {
+        const req = new XMLHttpRequest();
+        req.open("GET", `?type=${command}&username=${username}`);
+        req.send();
+    }
+
+    function send_command(data) {
+        const req = new XMLHttpRequest();
+        req.open("GET",data.action);
+        req.send();
+    }
+
+</script>
+
+</html>
