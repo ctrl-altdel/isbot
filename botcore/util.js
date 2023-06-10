@@ -27,5 +27,12 @@ function blocksByName(name){
     }
 }
 
+function is_Chinese(string_like){
+    for (let i = 0; i < string_like.length; i++) {
+        if (string_like.charCodeAt(i) > 255) return true;
+    }
+    return false;
+}
 
-module.exports = {is_valid_str, is_valid_array, itemsByName, blocksByName};
+
+module.exports = {is_valid_str, is_valid_array, itemsByName, blocksByName, is_Chinese};
