@@ -1,20 +1,32 @@
 const logger = require('../botcore/logsystem');
+const {items} = require('../translation/items');
+const {sleep} = require('../botcore/threadsleep');
 
-const mailbox_title = "{\"text\":\"邮件列表\"}";
-const mail_title_prifix = "{\"text\":\"放入送给";
-
-async function ci_list(bot){
+async function ci_list(bot, free_included = false){
     let list = []
     const listen = (jsonMsg,position)=>{
         if("extra" in jsonMsg) return;
-        // let content = jsonMsg.json.text;
-        let content = String();
+        let content = jsonMsg.json.text;
         if(content.startsWith("§8[§3岛屿助手§8] §7 - ")){
-            content = content.slice(18)
+            console.log(content);
+            let tmp = content.slice(18).split(' ');
+            let unlocked = tmp[1] == "Premium";
+            if(free_included || unlocked){
+                let info = tmp[0].split("x");
+                list.push({
+                    "name":items.get(tmp[0]),
+                    "count":parseInt(info[1]),
+                    "unlocked":unlocked 
+                })
+            }
         }
     }
-
-
+    bot.bot.chat("/ci textlist");
+    logger.log(`${bot.name} use command: /ci textlist`)
+    bot.bot.on("message",listen);
+    await sleep(2000);
+    bot.bot.off("message",listen);
+    return list;
 }
 
 
@@ -39,4 +51,4 @@ async function ci_get(bot, tgt_user, items ,message=undefined){
 
 
 
-module.exports = {send_mail}
+module.exports = {ci_list}

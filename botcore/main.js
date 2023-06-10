@@ -1,4 +1,4 @@
-const {readFileSync, readdirSync, mkdirSync} = require('fs');
+const {readFileSync} = require('fs');
 const {BotServer} = require('../www/server');
 const logger = require('./logsystem');
 
