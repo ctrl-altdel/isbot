@@ -1,4 +1,4 @@
-const {readFileSync} = require('fs');
+const {readFileSync, readdirSync, mkdirSync} = require('fs');
 const {BotServer} = require('../www/server');
 const logger = require('./logsystem');
 
@@ -9,7 +9,9 @@ let accounts = JSON.parse(readFileSync("./config/accounts.json","utf8"));
 let minecraft_server = JSON.parse(readFileSync("./config/server.json","utf8"));
 let web_conf = JSON.parse(readFileSync("./config/program.json","utf8"));
 
+if(! readdirSync("./").includes("logs")) mkdirSync("./logs");
 logger.log("Configuration files exist.");
 
+process.on("uncaughtException",(err,origin)=>{logger.error("Uncaught Error at main thread:" + err + " from : " + origin)})
 
 let botServer = new BotServer(accounts, minecraft_server, web_conf);

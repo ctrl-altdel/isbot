@@ -87,6 +87,8 @@ if(!Thread.isMainThread){
     let isbot = new IsBot(Thread.workerData);
     isbot.bot.on("end",()=>{Thread.parentPort.postMessage(["offline", isbot.name])});
     Thread.parentPort.on("message",(message)=>{isbot.on_command_heard(message[0], message[1])});
+
+    process.on("uncaughtException",(err,origin)=>{logger.error(`Unkaught Error at Thread ${Thread.threadId} (working for ${Thread.workerData.username}) :${err}`)})
 }
 
 

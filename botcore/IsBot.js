@@ -1,5 +1,5 @@
 const mineflayer = require('mineflayer');
-const {settingsAutoEat} = require('../util/AutoEatUtil');
+const {settingsAutoEat} = require('../botfunction/autoeat');
 const {Tasks} = require("./Tasks");
 const {loadCommands, reloadCommands} = require("../botfunction/loadcommand")
 const {privateMsg} = require("../botfunction/communication")

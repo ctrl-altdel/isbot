@@ -15,7 +15,21 @@ class BotServer {
 
     constructor(accounts, mcserver, http_config) {
         this.load_html_cache();
-        this.initialize();
+        this.botmanager = new BotManager(accounts, mcserver);
+        this.http_server = http.createServer((req, res) => {
+            if (req.method = "GET") {
+                if (req.url.includes("?")) {
+                    this.on_request_heard(req, res);
+                }
+                else {
+                    this.on_page_required(req, res);
+                }
+            }
+        });
+        let port = http_config.ctrlport;
+        this.http_server.listen(port, () => {
+            logger.log(`Web control server started at port ${port}`);
+        })
     }
 
     load_html_cache() {
@@ -125,24 +139,6 @@ class BotServer {
             list.push(new data(this.botmanager.botList[name]));
         }
         return list;
-    }
-
-    initialize() {
-        this.botmanager = new BotManager(accounts, mcserver);
-        this.http_server = http.createServer((req, res) => {
-            if (req.method = "GET") {
-                if (req.url.includes("?")) {
-                    this.on_request_heard(req, res);
-                }
-                else {
-                    this.on_page_required(req, res);
-                }
-            }
-        });
-        let port = http_config.ctrlport;
-        this.http_server.listen(port, () => {
-            logger.log(`Web control server started at port ${port}`);
-        })
     }
 }
 

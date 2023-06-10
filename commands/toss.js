@@ -1,5 +1,5 @@
 const {privateMsg} = require("../botfunction/communication");
-const {getItemByName} = require("../util/MinecraftDataUtil");
+const {itemsByName} = require("../botcore/util");
 
 async function run(bot, sender, params){
     if(params.length == 0){
@@ -17,7 +17,7 @@ async function run(bot, sender, params){
             }
             let targets = Array()
             for (let i = 1; i < params.length; i++) {
-                let item = getItemByName(params[i]);
+                let item = ItemsByName(params[i]);
                 if(item == undefined){
                     privateMsg(bot, sender, "toss item : 忽略不存在的 minecraft item : " + params[i]);
                 }

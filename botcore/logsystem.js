@@ -20,7 +20,7 @@ async function warn(msg){
 }
 
 async function error(msg){
-    console.error("[ERRROR] "+ msg);
+    console.error("[ERROR] "+ msg);
     writef("error",msg);
 }
 

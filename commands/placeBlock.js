@@ -1,6 +1,5 @@
 const {privateMsg} = require("../botfunction/communication");
-const MyStrUtil = require("../util/StrUtil");
-const MCD = require("minecraft-data")("1.19.2");
+const {is_valid_str, itemsByName, blocksByName} = require("../botcore/util")
 
  //放置方块
 async function run(bot, sender, params) {
@@ -10,14 +9,14 @@ async function run(bot, sender, params) {
         return;
     }
 
-    let place_item = MCD.itemsByName[params[0].toLowerCase()];
-    let target = MCD.blocksByName[params[1].toLowerCase()];
+    let place_item = itemsByName[params[0]];
+    let target = blocksByName[params[1]];
 
-    if(MyStrUtil.isNull(place_item)){
+    if(!is_valid_str(params[0])){
         privateMsg(bot, sender, `无效的 minecraft item : ${params[0]}`);
         return;
     }
-    if(MyStrUtil.isNull(target)){
+    if(!is_valid_str(params[1])){
         privateMsg(bot, sender, `无效的 minecraft block : ${params[1]}`);
         return;
     }

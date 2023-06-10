@@ -1,6 +1,3 @@
-const MyStrUtil = require("../util/StrUtil");
-const {isNull, isNotNull} = require("../util/StrUtil");
-const ThreadUtil = require("../util/ThreadUtil");
 const logger = require('./logsystem');
 
 let GlobalBotTask={
@@ -21,9 +18,6 @@ class Tasks {
     }
     addTask(taskName, task,time,message) {
 
-        if (MyStrUtil.isEmpty(taskName)) {
-            return;
-        }
         if ((typeof task)!== "function") {
             return;
         }
