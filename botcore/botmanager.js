@@ -7,7 +7,9 @@ class BotNode{
     account;
     status;
     botThread;
+    master;
     constructor(obj){
+        this.master = obj.master;
         this.username = obj.username;
         this.account = obj.account;
         this.status = -1;

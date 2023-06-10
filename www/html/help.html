@@ -64,11 +64,11 @@
 <script>
     function on_page_load() {
         let req = new XMLHttpRequest();
-        req.open("GET", "?type=docdata");
+        req.open("GET", "/mdhelp");
         req.send();
         req.onreadystatechange = () => {
             if (req.readyState == 4 && req.status == 200) {
-                set_content(JSON.parse(req.responseText));
+                set_content(req.responseText);
             }
         }
     }
@@ -76,17 +76,7 @@
     function set_content(data) {
         let table = document.getElementById("catalog");
         let text = document.getElementById("text");
-        table.innerHTML = null;
-        text.innerHTML = null;
-        for (let cmd in data) {
-            table.innerHTML += `<tr style="height: 30px;"><td><a href="#link_${cmd}" style="text-decoration: none; color: black">${cmd}</a></td></tr>`;
-            let cmd_text = `<h2><a name="link_${cmd}">${cmd}</a></h2>`;
-            data[cmd].forEach(line => {
-                cmd_text = cmd_text.concat(`<p>${line}</p>`);
-            });
-            cmd_text += "<p><br></p>"
-            text.innerHTML += cmd_text;
-        }
+        text.innerHTML = data;
     }
 
 </script>
