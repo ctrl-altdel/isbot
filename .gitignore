@@ -11,6 +11,10 @@ old*
 # log files
 logs
 
+#debug files
+*.hex
+*.cpuprofile
+
 # private files
 config/*.json
 

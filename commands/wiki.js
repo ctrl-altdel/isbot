@@ -41,7 +41,8 @@ async function run(bot, sender, params){
 
 const doc = [
     "toss <名称>",
-    "名称 : 中文或英文的物品名"
+    "名称 : 中文或英文的物品、方块名",
+    "将在<red>公屏</red>返回 中文 minecraft wiki 的相关资料页链接"
 ]
 
 module.exports = {run, doc}
