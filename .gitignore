@@ -11,14 +11,20 @@ old*
 # log files
 logs
 
+#debug files
+*.hex
+*.cpuprofile
+
 # private files
 config/*.json
 
 # vscode files
 .vscode
 
-# util files(will refactor)
-util
+# temp files(will refactor)
+*temp*
+*tmp*
+*test*
 
 # node packages
 node_modules

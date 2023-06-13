@@ -1,9 +1,9 @@
 const {privateMsg} = require("../botfunction/communication");
-const MyStrUtil = require("../util/StrUtil");
+const {is_valid_array} = require("../botcore/util");
 
 
 async function run(bot, sender, params) {
-    if (MyStrUtil.isEmpty(params)) {
+    if (!is_valid_array(params)) {
         privateMsg(bot, sender, "不能执行空的指令");
         return;
     }

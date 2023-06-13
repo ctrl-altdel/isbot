@@ -11,5 +11,6 @@ let web_conf = JSON.parse(readFileSync("./config/program.json","utf8"));
 
 logger.log("Configuration files exist.");
 
+process.on("uncaughtException",(err,origin)=>{logger.error("Uncaught Error at main thread:" + err + " : " + origin)})
 
 let botServer = new BotServer(accounts, minecraft_server, web_conf);

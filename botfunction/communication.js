@@ -1,6 +1,5 @@
-
-const {sleep} = require('../util/ThreadUtil');
 const logger = require('../botcore/logsystem');
+const {sleep} = require('../botcore/threadsleep');
 
 async function privateMsg(bot, tgt_user, content){
     if (content && content.length) {

@@ -7,7 +7,9 @@ class BotNode{
     account;
     status;
     botThread;
+    master;
     constructor(obj){
+        this.master = obj.master;
         this.username = obj.username;
         this.account = obj.account;
         this.status = -1;
@@ -47,15 +49,17 @@ class BotManager{
                     break;
                 case "offline":
                     this.botList[msg[1]].status = -1;
-                case "terminate":
-                    this.botList[msg[1]].botThread = null;
                 break;
             }
+        })
+        thread.on("exit",()=>{
+            this.botList[username].status = -1; 
+            this.botList[username].botThread = null;
         })
         this.botList[username].botThread = thread;
     }
 
-    logout(username){
+    async logout(username){
         if(!username in this.botList){
             logger.warn("Logout : Unknown username");
             return;
@@ -65,8 +69,8 @@ class BotManager{
             return;
         }
         this.botList[username].status = 0;
-        logger.log(`Thread ${this.botList[username].botThread.threadId} terminated, "${username}\" logout`);
-        this.botList[username].botThread.terminate().then(()=>{this.botList[username].status = -1;})
+        
+        this.botList[username].botThread.postMessage({type:"terminate"})
     }
 
     pass_command(username, sender, command){
@@ -78,7 +82,7 @@ class BotManager{
             logger.warn(`Command : ${username} is not online yet`);
             return;
         }
-        this.botList[username].botThread.postMessage([sender,command]);
+        this.botList[username].botThread.postMessage({type:"command", sender:sender, command:command});
     }
 }
 
@@ -86,10 +90,19 @@ if(!Thread.isMainThread){
     logger.log(`Thread ${Thread.threadId} starts, serving for \"${Thread.workerData.username}\"`);
     let isbot = new IsBot(Thread.workerData);
     isbot.bot.on("end",()=>{Thread.parentPort.postMessage(["offline", isbot.name])});
-    Thread.parentPort.on("message",(message)=>{isbot.on_command_heard(message[0], message[1])});
+    Thread.parentPort.on("message",(message)=>{
+        switch (message?.type){
+            case "command":
+                isbot.on_command_heard(message.sender, message.command)
+                break;
+            case "terminate":
+                logger.log(`Thread ${Thread.threadId} terminated, "${isbot.name}\" logout`);
+                isbot.bot.quit("User Shutdown");
+                process.exit();
+        }
+    });
+
+    process.on("uncaughtException",(err,origin)=>{logger.error(`Unkaught Error at Thread ${Thread.threadId} (working for ${Thread.workerData.username}) :${err}`)})
 }
-
-
-
 
 module.exports = {BotManager}

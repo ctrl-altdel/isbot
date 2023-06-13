@@ -42,19 +42,8 @@
         </div>
     </div>
 
-    <div id="main" style="position: absolute; bottom: 80px; top: 120px; width: 100%;">
-        <div
-            style="float: left; width: 250px; height: 100%; background-color: rgb(200,200,200); bottom: 0px; overflow:scroll; overflow-x: hidden; overflow-y: auto;">
-            <table style="width: 100%; text-align: center; font-size: x-large; color: black;">
-                <thead>
-                    <th style="height: 60px;">指令列表</th>
-                </thead>
-                <tbody id="catalog">
-                    <!-- Fill catalogs  -->
-                </tbody>
-            </table>
-        </div>
-        <div id="text" style="position: absolute; left: 280px;top: 0px; right: 0px; bottom: 0px; overflow:auto; ">
+    <div id="main" style="position: absolute; bottom: 80px; top: 120px; width: 100%;  overflow-y: auto; ">
+        <div id="text" style="width: 90%; margin-left: 5%; height: 100%;">
             <!-- Fill content -->
         </div>
     </div>
@@ -64,11 +53,11 @@
 <script>
     function on_page_load() {
         let req = new XMLHttpRequest();
-        req.open("GET", "?type=docdata");
+        req.open("GET", "/mdhelp");
         req.send();
         req.onreadystatechange = () => {
             if (req.readyState == 4 && req.status == 200) {
-                set_content(JSON.parse(req.responseText));
+                set_content(req.responseText);
             }
         }
     }
@@ -76,17 +65,7 @@
     function set_content(data) {
         let table = document.getElementById("catalog");
         let text = document.getElementById("text");
-        table.innerHTML = null;
-        text.innerHTML = null;
-        for (let cmd in data) {
-            table.innerHTML += `<tr style="height: 30px;"><td><a href="#link_${cmd}" style="text-decoration: none; color: black">${cmd}</a></td></tr>`;
-            let cmd_text = `<h2><a name="link_${cmd}">${cmd}</a></h2>`;
-            data[cmd].forEach(line => {
-                cmd_text = cmd_text.concat(`<p>${line}</p>`);
-            });
-            cmd_text += "<p><br></p>"
-            text.innerHTML += cmd_text;
-        }
+        text.innerHTML = data;
     }
 
 </script>

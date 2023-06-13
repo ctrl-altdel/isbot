@@ -1,8 +1,8 @@
 const {appendFile} = require('fs/promises');
-const {readFileSync} = require('fs');
+const {readFileSync, readdirSync} = require('fs');
 
 const filename = "./logs/log.csv";
-
+if(! readdirSync("./").includes("logs")) mkdirSync("./logs");
 
 async function writef(level, content){
     let time = new Date().toLocaleString('zh-CN');
@@ -20,7 +20,7 @@ async function warn(msg){
 }
 
 async function error(msg){
-    console.error("[ERRROR] "+ msg);
+    console.error("[ERROR] "+ msg);
     writef("error",msg);
 }
 

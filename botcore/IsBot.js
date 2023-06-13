@@ -1,5 +1,5 @@
 const mineflayer = require('mineflayer');
-const {settingsAutoEat} = require('../util/AutoEatUtil');
+const {settingsAutoEat} = require('../botfunction/autoeat');
 const {Tasks} = require("./Tasks");
 const {loadCommands, reloadCommands} = require("../botfunction/loadcommand")
 const {privateMsg} = require("../botfunction/communication")
@@ -24,7 +24,7 @@ class IsBot {
 
     initialize(){
         logger.log(`\"${this.name}\" trying to login at ${this.options.host}`);
-        this.bot = mineflayer.createBot(this.options);
+        this.bot = mineflayer.createBot(JSON.parse(JSON.stringify(this.options)));
         this.bot.once("spawn",()=>{
             Thread.parentPort.postMessage(["online", this.name]);
             logger.log(`\"${this.name}\" is online now.`);
@@ -49,7 +49,8 @@ class IsBot {
         this.bot.on('end',  (reason) => {
             this.bot.MyTasks.clearAllTask();
             this.bot.removeAllListeners();
-            logger.warn(`${this.name} unexpected down at ${new Date()}, trying to reconnect ...`);
+            if(reason == "User Shutdown") return;
+            logger.warn(`${this.name} unexpected down at ${new Date().toLocaleString("zh-CN")}, trying to reconnect ...`);
             setTimeout( () => this.initialize(), 5000);
         })
 
@@ -61,14 +62,15 @@ class IsBot {
             }
         })
         
-        this.bot.on("chat", async (username,message,translate,jsonMsg) => {
-
-            if(jsonMsg.json.text.length != 0 && username != this.name){
-                if (!this.options.master.includes(username)){
-                    privateMsg(this, sendUser, "您不具有BOT权限");
+        this.bot.on("message", async (jsonMsg) => {
+            if(jsonMsg?.text?.startsWith("§7")){
+                let sender = jsonMsg.text.split(" §7-> ")[0].slice(2);
+                if(sender == this.name) return;
+                if (!this.options.master.includes(sender)){
+                    privateMsg(this, sender, "您不具有BOT权限");
                     return;
                 }
-                this.on_command_heard(username, jsonMsg.extra[0].text);
+                this.on_command_heard(sender, jsonMsg.extra[0].text);
             }
         }
     )
