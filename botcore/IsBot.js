@@ -39,7 +39,7 @@ class IsBot {
     clearAll() {
         this.bot.MyTasks.clearAllTask();
         this.bot.chat("/assist autocraft clear");
-        this.bot.pathfinder.setGoal(null, false);
+        // this.bot.pathfinder.setGoal(null, false);
         this.bot.stopDigging();
         this.bot.clearControlStates();
     }

@@ -13,9 +13,12 @@ class BotServer {
     botmanager;
     http_server;
 
-    constructor(accounts, mcserver, http_config) {
+    constructor(accounts, mcserver, program_conf) {
         this.load_html_cache();
-        this.botmanager = new BotManager(accounts, mcserver);
+        let static_conf = {
+            clientcachedir : program_conf.clientcachedir ?? "./client_cache",
+        } 
+        this.botmanager = new BotManager(accounts, mcserver, static_conf);
         this.http_server = http.createServer((req, res) => {
             if (req.method = "GET") {
                 if (req.url.includes("?")) {
@@ -26,7 +29,7 @@ class BotServer {
                 }
             }
         });
-        let port = http_config.ctrlport;
+        let port = program_conf.ctrlport ?? 3001;
         this.http_server.listen(port, () => {
             logger.log(`Web control server started at port ${port}`);
         })

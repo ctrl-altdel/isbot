@@ -17,6 +17,7 @@ logs
 
 # private files
 config/*.json
+client_cache
 
 # vscode files
 .vscode

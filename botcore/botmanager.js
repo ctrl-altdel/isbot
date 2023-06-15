@@ -20,9 +20,11 @@ class BotNode{
 class BotManager{
     botList;
     server;
+    static_conf;
 
-    constructor(accounts, server){
+    constructor(accounts, server, static_conf){
         this.server = server;
+        this.static_conf = static_conf;
         this.botList = new Array();
 
         //use "username" as primary key
@@ -41,7 +43,7 @@ class BotManager{
             return;
         }
         this.botList[username].status = 0;
-        let thread = new Thread.Worker(__filename, {workerData : {...this.server, ...this.botList[username]}});
+        let thread = new Thread.Worker(__filename, {workerData : {...this.server, ...this.botList[username], ...this.static_conf}});
         thread.on("message",(msg)=>{
             switch (msg[0]) {
                 case "online":

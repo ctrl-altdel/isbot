@@ -51,7 +51,7 @@ class Tasks {
      * @param taskName
      */
     hasTask(taskName) {
-        return isNotNull(this.taskMap.get(taskName));
+        return this.taskMap.has(taskName);
     }
 
     /**

@@ -1,4 +1,5 @@
 {
     "ctrlport":3002,
-    "refreshStatus":2000
+    "refreshStatus":2000,
+    "clientcachedir":"./client_cache"
 }
