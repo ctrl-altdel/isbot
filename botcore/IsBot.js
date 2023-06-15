@@ -50,8 +50,9 @@ class IsBot {
             this.bot.MyTasks.clearAllTask();
             this.bot.removeAllListeners();
             if(reason == "User Shutdown") return;
-            logger.warn(`${this.name} unexpected down at ${new Date().toLocaleString("zh-CN")}, trying to reconnect ...`);
-            setTimeout( () => this.initialize(), 5000);
+            logger.warn(`${this.name} unexpected down at ${new Date().toLocaleString("zh-CN")} Reason : ${reason}`);
+            logger.log("Will try to reconnect in 2s")
+            setTimeout( () => this.initialize(), 2000);
         })
 
         this.bot.on('health', () => {
@@ -72,8 +73,11 @@ class IsBot {
                 }
                 this.on_command_heard(sender, jsonMsg.extra[0].text);
             }
-        }
-    )
+        })
+
+        this.bot.on("error",(err)=>{
+            logger.error(`${this.name} occars error : ${JSON.stringify(err)}`)
+        })
     }
 
     on_command_heard(sender, message){
@@ -90,6 +94,8 @@ class IsBot {
             privateMsg(this, sender, "未定义的指令： " + cmd);
         }
     }
+
+
 
 }
 

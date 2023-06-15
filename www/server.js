@@ -16,7 +16,7 @@ class BotServer {
     constructor(accounts, mcserver, program_conf) {
         this.load_html_cache();
         let static_conf = {
-            clientcachedir : program_conf.clientcachedir ?? "./client_cache",
+            profilesFolder : program_conf.clientcachedir ?? "./client_cache",
         } 
         this.botmanager = new BotManager(accounts, mcserver, static_conf);
         this.http_server = http.createServer((req, res) => {
