@@ -19,13 +19,29 @@ async function run(bot, sender, params){
         initialize(bot);
         first = false;
     }
-    let player = params[0] ?? sender;
-    let target = bot.bot.players[player]?.entity?.position;
-    if(! target){
-        privateMsg(bot, sender, `机器人无法识别 ${player} 的位置`);
+    let player_name = params[0] ?? sender;
+    let player = bot.bot.players[player_name];
+    if(player == undefined){
+        privateMsg(bot, sender, `玩家 ${player_name} 不在线`);
         return;
     }
-    privateMsg(bot, sender, `机器人开始运动至 ${player}`);
+    if(player.entity == undefined){
+        if(params[2] == "global"){
+            bot.bot.chat(`/is tp ${player_name}`);
+            player = bot.bot.players[player_name];
+            if(player?.entity == undefined){
+                privateMsg(bot, sender, `已经移动到 ${player_name} 所在岛屿，但该玩家不在出生点附近`);
+                return;
+            }
+        }
+        else{
+            privateMsg(bot, sender, `玩家 ${player_name} 不在附近`);
+            return;
+        }
+    }
+    let target = player?.entity?.position;
+    if(target == undefined) return;
+    privateMsg(bot, sender, `机器人开始运动至 ${player_name}`);
     bot.bot.pathfinder.setMovements(movement);
     await bot.bot.pathfinder.goto(new GoalNear(target.x, target.y, target.z, 1)).then(
         ()=>{privateMsg(bot, sender, "运动成功完成")},
@@ -34,9 +50,10 @@ async function run(bot, sender, params){
 }
 
 const doc = [
-    "follow [player]",
-    "机器人尝试步行到玩家在发送指令时刻所在的位置",
-    "player : 目标玩家，缺省值为发送者"
+    "follow [player] [global]",
+    "机器人尝试移动到玩家在发送指令时刻所在的位置",
+    "player : 目标玩家，缺省值为发送者",
+    "global : 输入此参数后，若目标在其他岛屿，机器人将尝试移动到该岛屿"
 ]
 
 

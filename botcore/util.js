@@ -27,6 +27,9 @@ function blocksByName(name){
     }
 }
 
+/** 
+*  @function Whether a utf8 string contains Chinese character
+*/
 function is_Chinese(string_like){
     for (let i = 0; i < string_like.length; i++) {
         if (string_like.charCodeAt(i) > 255) return true;
@@ -34,5 +37,13 @@ function is_Chinese(string_like){
     return false;
 }
 
+/** 
+*  @function try to parse a string to Boolean
+*  @returns {Boolean} true when string_like can be recognized as "True", otherwise false
+*/
+function parseBool(string_like){
+    new Array().at()
+    return (string_like?.toLowerCase() == "true") || (["真", "是", "好", "确认", "正确"].includes(string_like))
+}
 
-module.exports = {is_valid_str, is_valid_array, itemsByName, blocksByName, is_Chinese};
+module.exports = {is_valid_str, is_valid_array, itemsByName, blocksByName, is_Chinese, parseBool};

@@ -43,7 +43,12 @@ class BotManager{
             return;
         }
         this.botList[username].status = 0;
-        let thread = new Thread.Worker(__filename, {workerData : {...this.server, ...this.botList[username], ...this.static_conf}});
+        let thread = new Thread.Worker(__filename, {
+            workerData : {
+                botdata : {...this.server, ...this.botList[username], ...this.static_conf},
+                logfilename : logger.logFileName,
+            }
+        });
         thread.on("message",(msg)=>{
             switch (msg[0]) {
                 case "online":
@@ -89,8 +94,8 @@ class BotManager{
 }
 
 if(!Thread.isMainThread){
-    logger.log(`Thread ${Thread.threadId} starts, serving for \"${Thread.workerData.username}\"`);
-    let isbot = new IsBot(Thread.workerData);
+    logger.log(`Thread ${Thread.threadId} starts, serving for \"${Thread.workerData.botdata.username}\"`);
+    let isbot = new IsBot(Thread.workerData.botdata);
     isbot.bot.on("end",()=>{Thread.parentPort.postMessage(["offline", isbot.name])});
     Thread.parentPort.on("message",(message)=>{
         switch (message?.type){

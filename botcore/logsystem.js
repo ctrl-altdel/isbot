@@ -1,8 +1,16 @@
 const {appendFile} = require('fs/promises');
 const {readFileSync, readdirSync} = require('fs');
+const Thread = require('worker_threads');
 
-const filename = "./logs/log.csv";
-if(! readdirSync("./").includes("logs")) mkdirSync("./logs");
+let filename;
+if(Thread.isMainThread){
+    if(! readdirSync("./").includes("logs")) mkdirSync("./logs");
+    filename = `./logs/log_${Date.now()}.csv`;
+    log(`All stdout will be logged in file ${filename}`)
+}
+else{
+    filename = Thread.workerData.logfilename;
+}
 
 async function writef(level, content){
     let time = new Date().toLocaleString('zh-CN');
@@ -34,5 +42,5 @@ function get_log(){
 }
 
 
-module.exports = {log, warn, error, get_log};
+module.exports = {log, warn, error, get_log, logFileName : filename};
 
