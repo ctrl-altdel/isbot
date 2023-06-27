@@ -26,7 +26,7 @@ async function run(bot, sender, params){
         return;
     }
     if(player.entity == undefined){
-        if(params[2] == "global"){
+        if(params[1] == "global"){
             bot.bot.chat(`/is tp ${player_name}`);
             player = bot.bot.players[player_name];
             if(player?.entity == undefined){
